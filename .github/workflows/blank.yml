@@ -1,0 +1,23 @@
+name: Test Queue Time
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+# This forces only 1 workflow to run at a time
+# Additional runs will queue and wait
+concurrency:
+  group: test-queue-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  long-running-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Simulate long running process
+        run: |
+          echo "Job started at: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          echo "This job will run for 30 seconds to create queue time for subsequent runs"
+          sleep 30
+          echo "Job completed at: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
